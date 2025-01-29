@@ -17,9 +17,6 @@ acl localnet src all
 http_access allow localnet
 http_access deny all
 
-cache_mem 64 MB
-cache_dir ufs /var/spool/squid 100 16 256
-
 access_log /var/log/squid/access.log squid
 cache_log /var/log/squid/cache.log
 EOF
