@@ -6,8 +6,6 @@ sudo apt update
 # Install necessary packages
 sudo apt install -y squid
 
-# Backup the original configuration file
-sudo cp /etc/squid/squid.conf /etc/squid/squid.conf.bak
 
 # Create a new configuration file
 cat << EOF | sudo tee /etc/squid/squid.conf
@@ -17,15 +15,22 @@ acl localnet src all
 http_access allow localnet
 http_access deny all
 
-access_log /var/log/squid/access.log squid
-cache_log /var/log/squid/cache.log
+cache deny all
+cache_mem 0 MB
+maximum_object_size 0 KB
+minimum_object_size 0 KB
+cache_dir null /tmp
 EOF
 
-# Append to /etc/security/limits.conf
-echo "* - nofile 4096" | sudo tee -a /etc/security/limits.conf
+sudo tee /etc/systemd/system/squid.service.d/override.conf << EOF
+[Service]
+LimitNOFILE=65536
+EOF
+
+sudo systemctl daemon-reexec
+sudo systemctl restart squid
+
 
 # Enable and start the Squid service
 sudo systemctl enable squid.service
-sudo systemctl restart squid.service
-
 echo "HTTP proxy installation and configuration complete without authentication."
