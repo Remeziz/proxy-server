@@ -22,6 +22,7 @@ minimum_object_size 0 KB
 cache_dir null /tmp
 EOF
 
+sudo mkdir -p /etc/systemd/system/squid.service.d
 sudo tee /etc/systemd/system/squid.service.d/override.conf << EOF
 [Service]
 LimitNOFILE=65536
