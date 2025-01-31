@@ -11,15 +11,13 @@ sudo apt install -y squid
 cat << EOF | sudo tee /etc/squid/squid.conf
 http_port 3128
 
-acl localnet src all
-http_access allow localnet
-http_access deny all
-
 cache deny all
-cache_mem 0 MB
-maximum_object_size 0 KB
-minimum_object_size 0 KB
 cache_dir null /tmp
+
+# Allow traffic only from IP 65.21.8.46
+acl allowed_ip src 65.21.8.46
+http_access allow allowed_ip
+http_access deny all
 EOF
 
 sudo mkdir -p /etc/systemd/system/squid.service.d
